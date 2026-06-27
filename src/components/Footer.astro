@@ -1,0 +1,29 @@
+---
+const copyright = "&copy; 2022-2026 Yukke.org &middot;";
+---
+
+<footer class="footer">
+  <span>{copyright}</span>
+  <span class="footer-top">
+    <a href="#top" accesskey="g" title="Go to Top (Alt + G)">
+      Go to Top &uarr;
+    </a>
+  </span>
+</footer>
+
+<style>
+  .footer {
+    padding: var(--gap);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap);
+    font-size: 13px;
+    color: var(--theme-text-secondary);
+    flex-wrap: wrap;
+  }
+
+  .footer a {
+    color: var(--theme-text-secondary);
+  }
+</style>

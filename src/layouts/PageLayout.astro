@@ -1,0 +1,62 @@
+---
+import Layout from "./Layout.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Render the content in the secondary (muted) text color. */
+  muted?: boolean;
+}
+
+const { title, description, muted = false } = Astro.props;
+---
+
+<Layout title={title} description={description}>
+  <article class="post-single">
+    <header class="post-header">
+      <h1 class="post-title">{title}</h1>
+    </header>
+    <div class:list={["post-content", { muted }]}>
+      <slot />
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .post-single {
+    max-width: 100%;
+  }
+
+  .post-header {
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--theme-border);
+  }
+
+  .post-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .post-content {
+    line-height: 1.8;
+  }
+
+  .post-content.muted {
+    color: var(--theme-text-secondary);
+  }
+
+  /* Slotted prose from pages */
+  .post-content :global(p) {
+    margin: 0 0 16px;
+  }
+
+  .post-content :global(ul) {
+    padding-left: 20px;
+  }
+
+  .post-content :global(li) {
+    margin-bottom: 8px;
+  }
+</style>
