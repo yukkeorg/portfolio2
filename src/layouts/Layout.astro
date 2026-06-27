@@ -1,23 +1,257 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = "Yukke.org", description = "Ohshima Yusuke's personal website" } = Astro.props;
+
+const nav = [
+  { label: "About", href: "/about/" },
+  { label: "Archives", href: "/archives/" },
+];
+---
+
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title === "Yukke.org" ? title : `${title} | Yukke.org`}</title>
+    <link rel="icon" href="/favicon.ico" />
+  </head>
+  <body>
+    <header class="header">
+      <nav class="nav">
+        <a href="/" class="logo" accesskey="h" title="Yukke.org Portfolio (Alt + H)">
+          Yukke.org Portfolio
+        </a>
+        <ul class="menu">
+          {nav.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))}
+          <li>
+            <button id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+              <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+              <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="main">
+      <slot />
+    </main>
+
+    <footer class="footer">
+      <span>
+        &copy; 2022-2026 Yukke.org &middot;
+        Powered by <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>
+      </span>
+      <span class="footer-top">
+        <a href="#top" accesskey="g" title="Go to Top (Alt + G)">Go to Top &uarr;</a>
+      </span>
+    </footer>
+  </body>
 </html>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+<script>
+  const storageKey = "theme";
+
+  function applyTheme(theme: string) {
+    document.documentElement.setAttribute("data-theme", theme);
+    const moon = document.getElementById("moon");
+    const sun = document.getElementById("sun");
+    if (moon && sun) {
+      moon.style.display = theme === "dark" ? "none" : "block";
+      sun.style.display = theme === "dark" ? "block" : "none";
+    }
+  }
+
+  const saved = localStorage.getItem(storageKey);
+  const system = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  applyTheme(saved ?? system);
+
+  document.getElementById("theme-toggle")?.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme") ?? system;
+    const next = current === "dark" ? "light" : "dark";
+    localStorage.setItem(storageKey, next);
+    applyTheme(next);
+  });
+</script>
+
+<style is:global>
+  :root {
+    --gap: 24px;
+    --content-gap: 20px;
+    --nav-width: 1024px;
+    --main-width: 720px;
+    --header-height: 60px;
+    --radius: 8px;
+
+    /* light theme */
+    --theme-bg: #ffffff;
+    --theme-border: #e5e5e5;
+    --theme-header-bg: rgba(255, 255, 255, 0.85);
+    --theme-text: #333;
+    --theme-text-secondary: #777;
+    --theme-link: #0969da;
+    --theme-entry-bg: #f9f9f9;
+  }
+
+  [data-theme="dark"] {
+    --theme-bg: #1d1e20;
+    --theme-border: rgba(255, 255, 255, 0.1);
+    --theme-header-bg: rgba(29, 30, 32, 0.85);
+    --theme-text: rgba(255, 255, 255, 0.84);
+    --theme-text-secondary: rgba(255, 255, 255, 0.5);
+    --theme-link: #7db9e8;
+    --theme-entry-bg: #26272a;
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    background: var(--theme-bg);
+    color: var(--theme-text);
+    transition: background 0.2s, color 0.2s;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  a {
+    color: var(--theme-link);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* Header */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--theme-header-bg);
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+  }
+
+  .nav {
+    max-width: var(--nav-width);
+    margin: 0 auto;
+    padding: 0 var(--gap);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--theme-text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .menu {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .menu a {
+    color: var(--theme-text);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+
+  .menu a:hover {
+    background: var(--theme-border);
+    text-decoration: none;
+  }
+
+  #theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--theme-text);
+    padding: 6px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    transition: background 0.15s;
+  }
+
+  #theme-toggle:hover {
+    background: var(--theme-border);
+  }
+
+  /* Main */
+  .main {
+    flex: 1;
+    max-width: var(--main-width);
+    margin: 0 auto;
+    padding: calc(var(--gap) * 2) var(--gap);
+    width: 100%;
+  }
+
+  /* Footer */
+  .footer {
+    padding: var(--gap);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gap);
+    font-size: 13px;
+    color: var(--theme-text-secondary);
+    flex-wrap: wrap;
+  }
+
+  .footer a {
+    color: var(--theme-text-secondary);
+  }
+
+  .footer-top a {
+    color: var(--theme-text-secondary);
+  }
 </style>
