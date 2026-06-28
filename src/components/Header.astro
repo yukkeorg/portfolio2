@@ -2,8 +2,8 @@
 import ThemeToggle from "./ThemeToggle.astro";
 
 type LinkProperty = {
-  label: string,
-  href: string,
+  label: string;
+  href: string;
 };
 
 const nav: LinkProperty[] = [
@@ -14,15 +14,21 @@ const nav: LinkProperty[] = [
 
 <header class="header">
   <nav class="nav">
-    <a href="/" class="logo" accesskey="h" title="Yukke.org Portfolio (Alt + H)">
-      Yukke.org Portfolio
+    <a
+      href="/"
+      class="logo"
+      accesskey="h"
+      title="Yukke.org Portfolio (Alt + H)"
+    >
     </a>
     <ul class="menu">
-      {nav.map((item) => (
-        <li>
-          <a href={item.href}>{item.label}</a>
-        </li>
-      ))}
+      {
+        nav.map((item) => (
+          <li>
+            <a href={item.href}>{item.label}</a>
+          </li>
+        ))
+      }
       <li>
         <ThemeToggle />
       </li>

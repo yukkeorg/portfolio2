@@ -3,15 +3,17 @@ import SocialLinks from "./SocialLinks.astro";
 
 interface Props {
   name?: string;
+  realname?: string;
   avatarSrc?: string;
 }
 
-const { name, avatarSrc } = Astro.props;
+const { name, realname, avatarSrc } = Astro.props;
 ---
 
 <div class="profile">
   <img src={avatarSrc} alt={name} class="avatar" width="120" height="120" />
   <h1 class="name">{name}</h1>
+  <h2 class="realname">{realname}</h2>
   <SocialLinks />
 </div>
 
@@ -42,5 +44,12 @@ const { name, avatarSrc } = Astro.props;
     font-weight: 700;
     margin: 0;
     color: var(--theme-text);
+  }
+
+  .realname {
+    font-size: 1rem;
+    font-weight: 400;
+    margin: 0;
+    color: var(--theme-text-secondary);
   }
 </style>
